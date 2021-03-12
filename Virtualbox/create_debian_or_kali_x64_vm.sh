@@ -9,10 +9,10 @@ medium=$4
 
 # OS, CPU, disk and RAM vars
 ostype=debian_64
-vdisize=30000
+vdisize=60000
 base=$(pwd)
 vdifile="$base"/"$name"/"$name".vdi
-memory=1024
+memory=4096
 cpus=2
 vram=16
 
@@ -23,9 +23,6 @@ password=changeme
 
 # REGIONAL
 country=NL
-
-# PACKAGES
-apt_pkg_kali="kali-linux-default"
 
 #######################
 ### BEGIN ARGUMENTS ###
@@ -68,7 +65,12 @@ fi
 ###################################
 
 # Install some prerequisites for installing/getting packages
-apt_pre_pkg="apt-get -y install software-properties-common wget; "
+apt_pre_pkg="apt-get -y install 
+		build-essential \
+		module-assistant \
+		software-properties-common \
+		sudo \
+		wget; "
 
 ######################
 ### BEGIN GUI PKGS ###
@@ -95,29 +97,24 @@ apt_update_cmd="apt-get update"
 # Begin regular Apt repo; add non-free, contrib to apt sources
 apt_deb_sources_cmd="apt-add-repository non-free; apt-add-repository contrib"
 # Begin install apt packages
-apt_deb_pkgs="virtualbox-guest-additions-iso \
-	acpid \
-	build-essential \
-	module-assistant \
-	sudo \
-	vim \
+apt_deb_pkgs="
+	virtualbox-guest-additions-iso \
 	net-tools \
+	acpid \
 	dnsutils \
-	sudo \
 	htop \
-	curl 
-	wget \
 	openssl \
+	curl \
 	nmap \
 	lsof \
 	netcat \
 	ncat \
 	aptitude \
+	vim \
 	ack-grep \
 	ripgrep \
 	p7zip-full \
 	"
-
 # Concatenate Apt commands
 apt_deb_cmd+="${apt_deb_sources_cmd}; "
 apt_deb_cmd+="${apt_update_cmd}; "
@@ -136,10 +133,17 @@ apt_add_kali_repo="echo 'deb http://http.kali.org/kali kali-rolling main non-fre
 	echo 'deb-src http://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list; \
 	wget https://archive.kali.org/archive-key.asc; \
 	apt-key add archive-key.asc"
+# Install the vbox guest additions from the Kali repo, instead from the ISO to avoid conflicts during install
+apt_kali_pkgs="kali-linux-default \
+		virtualbox-guest-x11 \
+		seclists \
+		"
 apt_kali_cmd+="${apt_add_kali_repo}; "
 apt_kali_cmd+="${apt_update_cmd}; "
-# Install packages from the repo
-apt_kali_cmd+="DEBIAN_FRONTEND=noninteractive apt-get -yq install ${apt_pkg_kali}; "
+# Concatenate Apt commands; skip interactive questions
+for pkg in ${apt_kali_pkgs}; do
+	apt_kali_cmd+="DEBIAN_FRONTEND=noninteractive apt-get -yq install ${pkg}; ";
+done
 ################
 ### END KALI ###
 ################
@@ -159,11 +163,11 @@ usermod_cmd="usermod -aG ${user_groups} ${user};"
 run_cmds+="${apt_pre_pkg} "
 if [ $repo == "debian" ]; then
 	run_cmds+="${apt_deb_cmd} "
+	run_cmds+="${vbox_guest_additions} "
 else
 	run_cmds+="${apt_kali_cmd} "
 fi
 run_cmds+="${apt_gui_cmd} "
-run_cmds+="${vbox_guest_additions} "
 run_cmds+="${usermod_cmd} "
 run_cmds+="${grub_timeout_cmd} "
 

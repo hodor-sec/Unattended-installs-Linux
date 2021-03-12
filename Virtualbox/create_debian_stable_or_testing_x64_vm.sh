@@ -9,10 +9,10 @@ medium=$4
 
 # OS, CPU, disk and RAM vars
 ostype=debian_64
-vdisize=30000
+vdisize=60000
 base=$(pwd)
 vdifile="$base"/"$name"/"$name".vdi
-memory=1024
+memory=2048
 cpus=2
 vram=16
 
@@ -23,9 +23,6 @@ password=changeme
 
 # REGIONAL
 country=NL
-
-# PACKAGES
-apt_pkg_kali="kali-linux-default"
 
 #######################
 ### BEGIN ARGUMENTS ###
@@ -129,22 +126,6 @@ done
 ### END DEB REPO ###
 ####################
 
-##################
-### BEGIN KALI ###
-##################
-# Begin Kali repo; add to sources; modify/delete if desired
-apt_add_kali_repo="echo 'deb http://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list; \
-	echo 'deb-src http://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list; \
-	wget https://archive.kali.org/archive-key.asc; \
-	apt-key add archive-key.asc"
-apt_kali_cmd+="${apt_add_kali_repo}; "
-apt_kali_cmd+="${apt_update_cmd}; "
-# Install packages from the repo
-apt_kali_cmd+="DEBIAN_FRONTEND=noninteractive apt-get -yq install ${apt_pkg_kali}; "
-################
-### END KALI ###
-################
-
 # Set Grub timeout to 0
 grub_timeout_cmd="sed -i 's/^GRUB_TIMEOUT=.$/GRUB_TIMEOUT=0/' /etc/default/grub && update-grub;"
 # Install virtualbox guest additions manually due to errors using --install-additions, after having installed ISO and 7zip via apt
@@ -158,7 +139,6 @@ usermod_cmd="usermod -aG ${user_groups} ${user};"
 
 # Interpolate run commands
 run_cmds+="${apt_pre_pkg} "
-# run_cmds+="${apt_kali_cmd} "
 run_cmds+="${apt_deb_cmd} "
 run_cmds+="${apt_gui_cmd} "
 run_cmds+="${vbox_guest_additions} "
