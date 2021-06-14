@@ -80,6 +80,7 @@ apt_gui_pkgs="xfce4-* \
 		firefox-esr \
 		bleachbit \
 		gparted \
+		network-manager-* \
 		"
 for pkg in ${apt_gui_pkgs}; do
 	apt_gui_cmd+="apt-get -y install ${pkg}; ";
@@ -101,6 +102,7 @@ apt_deb_pkgs="
 	virtualbox-guest-additions-iso \
 	net-tools \
 	acpid \
+	aha \
 	dnsutils \
 	htop \
 	openssl \
@@ -134,9 +136,11 @@ apt_add_kali_repo="echo 'deb http://http.kali.org/kali kali-rolling main non-fre
 	wget https://archive.kali.org/archive-key.asc; \
 	apt-key add archive-key.asc"
 # Install the vbox guest additions from the Kali repo, instead from the ISO to avoid conflicts during install
+# Also, add the default deb packages listed above
 apt_kali_pkgs="kali-linux-default \
 		virtualbox-guest-x11 \
 		seclists \
+		${apt_deb_pkgs} \
 		"
 apt_kali_cmd+="${apt_add_kali_repo}; "
 apt_kali_cmd+="${apt_update_cmd}; "
