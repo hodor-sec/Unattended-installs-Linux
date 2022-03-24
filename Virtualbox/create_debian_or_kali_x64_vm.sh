@@ -65,12 +65,19 @@ fi
 ###################################
 
 # Install some prerequisites for installing/getting packages
-apt_pre_pkg="apt-get -y install 
+
+apt_deb_pre_pkg="apt-get -y install 
 		build-essential \
 		module-assistant \
 		software-properties-common \
 		sudo \
-		wget; "
+		wget \
+		"
+apt_kali_pre_pkg="apt-get -y install 
+		software-properties-common \
+		sudo \
+		wget \
+		"
 
 ######################
 ### BEGIN GUI PKGS ###
@@ -78,8 +85,10 @@ apt_pre_pkg="apt-get -y install
 # Start GUI packages; modify/delete if desired
 apt_gui_pkgs="xfce4-* \
 		firefox-esr \
+		chromium \
 		bleachbit \
 		gparted \
+		gnome-backgrounds \
 		network-manager-* \
 		"
 for pkg in ${apt_gui_pkgs}; do
@@ -109,6 +118,7 @@ apt_deb_pkgs="
 	curl \
 	nmap \
 	lsof \
+	locate \
 	netcat \
 	ncat \
 	aptitude \
@@ -118,6 +128,7 @@ apt_deb_pkgs="
 	p7zip-full \
 	"
 # Concatenate Apt commands
+apt_deb_cmd+="${apt_deb_pre_pkg}; "
 apt_deb_cmd+="${apt_deb_sources_cmd}; "
 apt_deb_cmd+="${apt_update_cmd}; "
 for pkg in ${apt_deb_pkgs}; do
@@ -131,20 +142,27 @@ done
 ### BEGIN KALI ###
 ##################
 # Begin Kali repo; add to sources; modify/delete if desired
-apt_add_kali_repo="echo 'deb http://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list; \
-	echo 'deb-src http://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list; \
-	wget https://archive.kali.org/archive-key.asc; \
-	apt-key add archive-key.asc"
+apt_add_kali_repo="echo 'deb http://http.kali.org/kali kali-rolling main non-free contrib' > /etc/apt/sources.list; \
+		echo 'deb-src http://http.kali.org/kali kali-rolling main non-free contrib' >> /etc/apt/sources.list; \
+		wget https://archive.kali.org/archive-key.asc; \
+		apt-key add archive-key.asc"
+
 # Install the vbox guest additions from the Kali repo, instead from the ISO to avoid conflicts during install
 # Also, add the default deb packages listed above
 apt_kali_pkgs="kali-linux-default \
 		virtualbox-guest-x11 \
+		metasploit-framework \
 		seclists \
-		${apt_deb_pkgs} \
 		"
+
+apt_kali_cmd+="${apt_kali_pre_pkg}; "
 apt_kali_cmd+="${apt_add_kali_repo}; "
 apt_kali_cmd+="${apt_update_cmd}; "
-# Concatenate Apt commands; skip interactive questions
+
+# Concatenate Apt for both Debian and Kali commands; skip interactive questions
+for pkg in ${apt_deb_pkgs}; do
+	apt_kali_cmd+="DEBIAN_FRONTEND=noninteractive apt-get -yq install ${pkg}; ";
+done
 for pkg in ${apt_kali_pkgs}; do
 	apt_kali_cmd+="DEBIAN_FRONTEND=noninteractive apt-get -yq install ${pkg}; ";
 done
@@ -164,7 +182,6 @@ vbox_guest_additions="m-a prepare; \
 usermod_cmd="usermod -aG ${user_groups} ${user};"
 
 # Interpolate run commands
-run_cmds+="${apt_pre_pkg} "
 if [ $repo == "debian" ]; then
 	run_cmds+="${apt_deb_cmd} "
 	run_cmds+="${vbox_guest_additions} "
