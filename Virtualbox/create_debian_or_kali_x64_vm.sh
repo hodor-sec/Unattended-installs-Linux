@@ -205,7 +205,7 @@ postinstall_cmd+="\""
 
 # ISOLINUX AND LOG LOCATION
 aux_base_path="$base"/"$name"/
-isolinux="$aux_base_path"isolinux-isolinux.cfg
+isolinux="$aux_base_path"isolinux.cfg
 logfile="$aux_base_path"logfile.txt
 #####################
 ### END VARIABLES ###
