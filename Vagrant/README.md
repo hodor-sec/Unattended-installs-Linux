@@ -3,7 +3,6 @@ Templates for deploying VM's using Vagrant and provisioning using Puppet.
 
 ### Install prerequisites:
 ```
-vagrant plugin install vagrant-vbguest
 vagrant plugin install vagrant-puppet-install
 puppet module install puppetlabs-apt
 ```
