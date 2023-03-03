@@ -1,0 +1,34 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "debian/testing64"
+  config.vm.hostname = "machine"
+  # config.vm.network 'private_network', virtualbox__intnet: 'Security', type: 'dhcp'
+
+  config.vm.synced_folder "~/vbox_shared_folders/vboxtemp", "/vagrant_temp", SharedFoldersEnableSymlinksCreate: false
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  $apt = <<-SCRIPT
+  sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list
+  apt-get -y update
+  apt-get -y upgrade
+  apt-get -y dist-upgrade
+  SCRIPT
+  config.vm.provision 'shell', inline: $apt
+  config.vm.provision :reload
+
+  config.vm.provision 'shell', path: 'puppet.sh'
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--vram", "128"]
+    vb.cpus = 2
+    vb.name= "TST: Testing - Debian x64"
+    vb.memory = "4096"
+  end
+
+  config.vm.provision "puppet" do |puppet|
+    puppet.manifests_path = "manifests"
+    puppet.manifest_file = "init.pp"
+    puppet.module_path = "modules"
+  #  puppet.options = "--verbose --debug"
+  end
+
+end

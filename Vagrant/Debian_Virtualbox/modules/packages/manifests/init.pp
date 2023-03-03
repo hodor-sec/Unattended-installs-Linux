@@ -1,0 +1,37 @@
+class packages {
+    package { [
+      'ack-grep',
+      'aha',
+      'aptitude',
+      'build-essential',
+      'curl',
+      'dnsutils',
+      'gawk',
+      'golang',
+      'htop',
+      'locate',
+      'lsof',
+      'module-assistant',
+      'nasm',
+      'netcat-traditional',
+      'ncat',
+      'net-tools',
+      'nmap',
+      'openssl',
+      'p7zip-full',
+      'python3',
+      'puppet',
+      'ripgrep',
+      'screen',
+      'tmux',
+      'tree',
+      'sed',
+      'strace',
+      'sudo',
+      'vim',
+      'wget',
+      'zstd',
+      ]:
+      ensure  => present
+    }
+}
