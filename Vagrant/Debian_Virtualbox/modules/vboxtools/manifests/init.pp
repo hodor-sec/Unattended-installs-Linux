@@ -16,7 +16,7 @@ class vboxtools {
     path    => ['/usr/bin', '/usr/sbin',],
   }
   exec { 'run_script':
-    command => 'sh /tmp/vboxiso/VBoxLinuxAdditions.run',
+    command => 'sh /tmp/vboxiso/VBoxLinuxAdditions.run || true',
     path    => ['/usr/bin', '/usr/sbin',],
   }
   exec { 'delete_dir':
