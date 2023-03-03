@@ -13,7 +13,7 @@ class ssh::config {
   ensure => present,
   owner => 'root',
   group => 'root',
-  mode => '-rw------',
+  mode => '0600',
   source => "puppet:///modules/ssh/sshd_config",
   notify => Class["ssh::service"],
       }
