@@ -1,8 +1,11 @@
 node default {
-    include users
     include sudoers
     include packages
     include ssh
-    include gui
+    include tmuxconfig
+    # include vimconfig
+    include bashrc
+    include users
     include vboxtools
+    include gui
 }

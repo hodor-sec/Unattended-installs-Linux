@@ -7,6 +7,7 @@ class packages {
       'curl',
       'dnsutils',
       'gawk',
+      'git',
       'golang',
       'htop',
       'locate',
