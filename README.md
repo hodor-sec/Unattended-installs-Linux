@@ -1,2 +1,2 @@
-# Unattended-installs
-Contains tools for deploying virtual machines
+# Unattended-installs-Linux
+Contains tools for deploying Linux virtual machines
