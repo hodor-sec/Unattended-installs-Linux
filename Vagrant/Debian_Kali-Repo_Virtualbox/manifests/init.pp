@@ -1,9 +1,10 @@
 node default {
     include bashrc
-    include tmuxconfig
-    include sudoers
-    include users
     include packages::preinstall
+    include tmuxconfig
+    include users
+    include vimconfig
+    include sudoers
     include kali_apt
     include packages
     include ssh

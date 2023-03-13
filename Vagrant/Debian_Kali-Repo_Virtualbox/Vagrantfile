@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
   $apt = <<-SCRIPT
-  sed -i "s/main/main contrib non-free/g" /etc/apt/sources.list
+  sed -i "s/main/main contrib non-free non-free-firmware/g" /etc/apt/sources.list
   apt-get -y update
   apt-get -y upgrade
   apt-get -y dist-upgrade

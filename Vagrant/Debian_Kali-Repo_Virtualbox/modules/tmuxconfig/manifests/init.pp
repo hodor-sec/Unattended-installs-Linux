@@ -1,5 +1,5 @@
 class tmuxconfig {
-    include tmuxconfig::download, tmuxconfig::config    
+    include tmuxconfig::download, tmuxconfig::config
 }
 
 class tmuxconfig::download {

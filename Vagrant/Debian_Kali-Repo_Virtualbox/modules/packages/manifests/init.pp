@@ -4,6 +4,7 @@ class packages {
 
 class packages::preinstall {
     package { [
+        'git',
         'gnupg',
     ]:
     ensure => present
