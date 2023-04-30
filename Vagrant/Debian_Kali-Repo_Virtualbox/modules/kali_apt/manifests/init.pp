@@ -8,11 +8,11 @@ class kali_apt {
     path    => ['/usr/bin', '/usr/sbin',],
   }
   exec { 'echo_deb':
-    command => "echo 'deb http://deb.debian.org main non-free non-free-firmware contrib' >> /etc/apt/sources.list",
+    command => "echo 'deb http://deb.debian.org/debian/ testing main non-free non-free-firmware contrib' >> /etc/apt/sources.list",
     path    => ['/usr/bin', '/usr/sbin',],
   }
   exec { 'echo_deb-src':
-    command => "echo 'deb-src http://deb.debian.org main non-free non-free-firmware contrib' >> /etc/apt/sources.list",
+    command => "echo 'deb-src http://deb.debian.org/debian/ testing main non-free non-free-firmware contrib' >> /etc/apt/sources.list",
     path    => ['/usr/bin', '/usr/sbin',],
   }
   exec { 'wget_asc':
