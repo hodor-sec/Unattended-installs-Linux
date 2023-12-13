@@ -4,19 +4,22 @@ Vagrant.configure("2") do |config|
   config.vm.hostname = "machine"
   # config.vm.network 'private_network', virtualbox__intnet: 'Security', type: 'dhcp'
 
-  config.vm.synced_folder "~/vbox_shared_folders/vboxtemp", "/vagrant_temp", SharedFoldersEnableSymlinksCreate: false
+  # config.vm.synced_folder "~/vm_shared_folders/temp", "/vagrant_temp", SharedFoldersEnableSymlinksCreate: false
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
   $apt = <<-SCRIPT
-  sed -i "s/main/main contrib non-free non-free-firmware/g" /etc/apt/sources.list
-  apt-get -y update
-  apt-get -y upgrade
-  apt-get -y dist-upgrade
+  wget http://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2022.1_all.deb
+  dpkg -i kali-archive-keyring_2022.1_all.deb
   SCRIPT
   config.vm.provision 'shell', inline: $apt
   config.vm.provision :reload
 
   config.vm.provision 'shell', path: 'puppet.sh'
+
+  # Disable installing Virtualbox tools
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = false
+  end
 
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--vram", "128"]

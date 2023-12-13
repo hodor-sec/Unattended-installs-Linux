@@ -24,6 +24,8 @@ class packages::tools {
       'htop',
       'locate',
       'lsof',
+      'git',
+      'gnupg',
       'module-assistant',
       'nasm',
       'netcat-traditional',
@@ -42,7 +44,6 @@ class packages::tools {
       'strace',
       'sudo',
       'vim',
-      'virtualbox-guest-x11',
       'wget',
       ]:
       ensure  => present

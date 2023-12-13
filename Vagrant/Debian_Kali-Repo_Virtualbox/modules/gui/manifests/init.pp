@@ -1,5 +1,6 @@
 class gui {
     package { [
+      'lightdm',
       'xfce4-*',
       'firefox-esr',
       'chromium',
