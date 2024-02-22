@@ -7,14 +7,6 @@ class kali_apt {
     command => "echo 'deb-src http://http.kali.org/kali kali-rolling main non-free non-free-firmware contrib' >> /etc/apt/sources.list",
     path    => ['/usr/bin', '/usr/sbin',],
   }
-  exec { 'echo_deb':
-    command => "echo 'deb http://deb.debian.org/debian/ testing main non-free non-free-firmware contrib' >> /etc/apt/sources.list",
-    path    => ['/usr/bin', '/usr/sbin',],
-  }
-  exec { 'echo_deb-src':
-    command => "echo 'deb-src http://deb.debian.org/debian/ testing main non-free non-free-firmware contrib' >> /etc/apt/sources.list",
-    path    => ['/usr/bin', '/usr/sbin',],
-  }
   exec { 'apt_update':
     command => 'apt-get -y update',
     path    => ['/usr/bin', '/usr/sbin',],

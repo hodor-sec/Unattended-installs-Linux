@@ -1,19 +1,26 @@
-Vagrant.configure("2") do |config|
-  config.vm.box = "debian/testing64"
-  config.disksize.size = '80GB'
-  config.vm.hostname = "machine"
-  # config.vm.network 'private_network', virtualbox__intnet: 'Security', type: 'dhcp'
+# Fail if the vagrant-disksize plugin is not installed
+unless Vagrant.has_plugin?("vagrant-disksize")
+    raise 'vagrant-disksize is not installed!'
+end
 
-  # config.vm.synced_folder "~/vm_shared_folders/temp", "/vagrant_temp", SharedFoldersEnableSymlinksCreate: false
+Vagrant.configure("2") do |config|
+  config.vm.hostname = "machine"
+  config.vm.box = "debian/testing64"
+  # Increase the default disk size to 96GB
+  config.disksize.size = "96GB"
+  # Run a script on provisioning the box to format the file system
+  # config.vm.provision "shell", path: "disk-extend.sh"
+
+  # Mapped folders
+  # config.vm.network 'private_network', virtualbox__intnet: 'Security', type: 'dhcp'
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
   $apt = <<-SCRIPT
-  wget http://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2022.1_all.deb
-  dpkg -i kali-archive-keyring_2022.1_all.deb
+  wget http://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2024.1_all.deb
+  dpkg -i kali-archive-keyring_2024.1_all.deb
   SCRIPT
   config.vm.provision 'shell', inline: $apt
   config.vm.provision :reload
-
   config.vm.provision 'shell', path: 'puppet.sh'
 
   # Disable installing Virtualbox tools
@@ -21,6 +28,7 @@ Vagrant.configure("2") do |config|
     config.vbguest.auto_update = false
   end
 
+  # Set name, CPU's, mem
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--vram", "128"]
     vb.cpus = 2
@@ -28,6 +36,7 @@ Vagrant.configure("2") do |config|
     vb.memory = "4096"
   end
 
+  # Provision packages using Puppet
   config.vm.provision "puppet" do |puppet|
     puppet.manifests_path = "manifests"
     puppet.manifest_file = "init.pp"
