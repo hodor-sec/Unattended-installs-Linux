@@ -8,6 +8,5 @@ node default {
     include vimconfig
     include timezone
     include ssh
-    include vboxtools
     include gui
 }
