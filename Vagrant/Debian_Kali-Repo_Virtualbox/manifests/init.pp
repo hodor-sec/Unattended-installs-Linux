@@ -1,9 +1,8 @@
 node default {
-    include diskresize
-    include bashrc
     include kali_apt
     include packages
     include sudoers
+    include bashrc
     include tmuxconfig
     include users
     include vimconfig

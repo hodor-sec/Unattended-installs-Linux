@@ -8,15 +8,29 @@ class kali_apt {
     path    => ['/usr/bin', '/usr/sbin',],
   }
   exec { 'apt_update':
-    command => 'apt-get -y update',
+    command => 'apt-get -q -y -o Dpkg::Options::="--force-confold" update',
+    path    => ['/usr/bin', '/usr/sbin',],
+  }
+  exec { 'grub_debconf':
+    command => 'printf "%s\n" "grub-pc grub-pc/install_devices multiselect /dev/sda" | debconf-set-selections',
+    path    => ['/usr/bin', '/usr/sbin',],
+  }
+  exec { 'grub_install':
+    command => 'grub-install /dev/sda && update-grub',
+    path    => ['/usr/bin', '/usr/sbin',],
+  }
+  exec { 'apt_grub':
+    command => 'apt-get -q -y -o Dpkg::Options::="--force-confold" install grub2',
     path    => ['/usr/bin', '/usr/sbin',],
   }
   exec { 'apt_upgrade':
-    command => 'apt-get -y upgrade',
+    command => 'apt-get -q -y -o Dpkg::Options::="--force-confold" upgrade',
     path    => ['/usr/bin', '/usr/sbin',],
+    timeout => 0,
   }
   exec { 'apt_dist-upgrade':
-    command => 'apt-get -y dist-upgrade',
+    command => 'apt-get -q -y -o Dpkg::Options::="--force-confold" dist-upgrade',
     path    => ['/usr/bin', '/usr/sbin',],
+    timeout => 0,
   }
 }

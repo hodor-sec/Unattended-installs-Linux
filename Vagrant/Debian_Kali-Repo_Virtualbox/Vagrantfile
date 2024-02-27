@@ -3,37 +3,49 @@ unless Vagrant.has_plugin?("vagrant-disksize")
     raise 'vagrant-disksize is not installed!'
 end
 
+# Env variables for unattended installs
+$set_environment_variables = <<SCRIPT
+tee "/etc/profile.d/myvars.sh" > "/dev/null" <<EOF
+export DEBIAN_FRONTEND=noninteractive 
+EOF
+SCRIPT
+
+# Get Kali keyring for apt
+$apt = <<-SCRIPT
+wget http://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2024.1_all.deb
+dpkg -i kali-archive-keyring_2024.1_all.deb
+SCRIPT
+
 Vagrant.configure("2") do |config|
+  # Set name, CPU's, mem
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--vram", "128"]
+    vb.cpus = 2
+    vb.name= "TST: Testing - Kali x64 - 2024"
+    vb.memory = "4096"
+  end
+
   config.vm.hostname = "machine"
-  config.vm.box = "debian/testing64"
-  # Increase the default disk size to 96GB
-  config.disksize.size = "96GB"
+  config.vm.box = "bento/debian-12"
+  # Increase the default disk size to 100GB
+  config.disksize.size = "100GB"
   # Run a script on provisioning the box to format the file system
-  # config.vm.provision "shell", path: "disk-extend.sh"
+  config.vm.provision "shell", path: "disk-extend.sh"
 
   # Mapped folders
   # config.vm.network 'private_network', virtualbox__intnet: 'Security', type: 'dhcp'
   config.vm.synced_folder ".", "/vagrant", disabled: true
 
-  $apt = <<-SCRIPT
-  wget http://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2024.1_all.deb
-  dpkg -i kali-archive-keyring_2024.1_all.deb
-  SCRIPT
+  # Set custom env vars
+  config.vm.provision "shell", inline: $set_environment_variables, run: "always"
+  # Apt options
   config.vm.provision 'shell', inline: $apt
-  config.vm.provision :reload
+  # Install updated Puppet version
   config.vm.provision 'shell', path: 'puppet.sh'
 
   # Disable installing Virtualbox tools
   if Vagrant.has_plugin?("vagrant-vbguest")
     config.vbguest.auto_update = false
-  end
-
-  # Set name, CPU's, mem
-  config.vm.provider "virtualbox" do |vb|
-    vb.customize ["modifyvm", :id, "--vram", "128"]
-    vb.cpus = 2
-    vb.name= "TST: Testing - Kali x64"
-    vb.memory = "4096"
   end
 
   # Provision packages using Puppet

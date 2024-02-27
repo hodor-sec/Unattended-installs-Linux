@@ -4,7 +4,7 @@ class vboxtools {
     path    => ['/usr/bin', '/usr/sbin',],
   }
   exec { 'module_prepare':
-    command => 'm-a prepare -i',
+    command => 'm-a prepare -i || true',
     path    => ['/usr/bin', '/usr/sbin',],
   }
   exec { 'create_dir':
