@@ -12,8 +12,8 @@ SCRIPT
 
 # Get Kali keyring for apt
 $apt = <<-SCRIPT
-wget http://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2024.1_all.deb
-dpkg -i kali-archive-keyring_2024.1_all.deb
+wget http://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2025.1_all.deb
+dpkg -i kali-archive-keyring_2025.1_all.deb
 SCRIPT
 
 Vagrant.configure("2") do |config|
@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     vb.customize ["modifyvm", :id, "--vram", "128"]
     vb.cpus = 2
-    vb.name= "TST: Testing - Kali x64 - 2024"
+    vb.name= "TST_Kali x64 - 2025"
     vb.memory = "4096"
   end
 

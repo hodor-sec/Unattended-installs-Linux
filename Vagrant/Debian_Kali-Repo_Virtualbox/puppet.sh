@@ -15,8 +15,6 @@ case "${ID}" in
     yum install -y puppet-agent
     ;;
   debian|ubuntu)
-    # wget https://apt.puppetlabs.com/puppet7-release-$(lsb_release -cs).deb
-    # dpkg -i puppet7-release-$(lsb_release -cs).deb
     wget https://apt.puppetlabs.com/puppet8-release-bullseye.deb
     dpkg -i puppet8-release-bullseye.deb
     apt-get -qq update
